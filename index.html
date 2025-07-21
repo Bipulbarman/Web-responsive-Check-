@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat UI</title>
+    <style>
+        /* Basic Reset & Font */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #131314;
+            color: #e3e3e3;
+            height: 100%;
+            overflow: hidden; /* Prevents body scroll */
+        }
+
+        /* Main App Layout using Flexbox */
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar (Left Panel) */
+        .sidebar {
+            width: 260px;
+            background-color: #1e1f20;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #333;
+            box-sizing: border-box; /* Ensures padding is included in width */
+        }
+        
+        /* Main Content Area */
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Chat Messages Area */
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto; /* Allows scrolling for messages */
+            padding: 24px;
+            padding-bottom: 120px; /* Space for the input form */
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .user-message {
+            background-color: #383a3f;
+            color: #e3e3e3;
+            margin-left: auto; /* Aligns to the right */
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message {
+            background-color: #242931;
+            color: #e3e3e3;
+            margin-right: auto; /* Aligns to the left */
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Chat Input Form Area */
+        .chat-input-form {
+            padding: 20px 24px;
+            background-color: #131314; /* Match body background */
+            width: 100%;
+            box-sizing: border-box;
+            position: absolute; /* Fixes form at the bottom */
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .input-wrapper {
+            width: 100%;
+            max-width: 800px; /* Limits the width of input area */
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        #chat-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px; /* Space for button */
+            background-color: #1e1f20;
+            border: 1px solid #333;
+            border-radius: 24px;
+            color: #e3e3e3;
+            font-size: 16px;
+            resize: none; /* Disables textarea resizing */
+        }
+
+        #chat-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        #send-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #4a90e2;
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #send-button:hover {
+            background-color: #5aa1f2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none; /* Hides sidebar on smaller screens */
+            }
+            .chat-input-form {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <h2>Chat History</h2>
+            </aside>
+
+        <main class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot-message">
+                    Hello! How can I help you today?
+                </div>
+            </div>
+
+            <form class="chat-input-form" id="chat-form">
+                <div class="input-wrapper">
+                    <input type="text" id="chat-input" placeholder="Message..." required autocomplete="off">
+                    <button type="submit" id="send-button">&#x27A4;</button> </div>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+
+        // Focus on the input bar when the page loads
+        window.onload = () => {
+            chatInput.focus();
+        };
+
+        // Handle form submission
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevents page from reloading
+
+            const messageText = chatInput.value.trim();
+
+            if (messageText === '') {
+                return; // Don't send empty messages
+            }
+
+            // Create and display the user's message
+            appendMessage(messageText, 'user-message');
+
+            // Clear the input and refocus
+            chatInput.value = '';
+            chatInput.focus();
+            
+            // Simulate a bot response after a short delay
+            setTimeout(() => {
+                const botResponse = "This is a simulated response. To build a real chatbot, you would connect this to an AI API.";
+                appendMessage(botResponse, 'bot-message');
+            }, 1000);
+        });
+
+        // Function to add a message to the chat window
+        function appendMessage(text, className) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', className);
+            messageElement.innerText = text;
+            chatMessages.appendChild(messageElement);
+            
+            // Scroll to the latest message
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>
